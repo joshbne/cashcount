@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>test</title>
+        <style>
+            * {
+                font-family: 'Calibri', sans-serif;
+                font-size: 20px;
+            }
+            .register > * {
+                display: flex;
+                justify-content: center;
+                /* border:1px black solid; */
+            }
+            .register{
+                width: 375px;
+                background-color: rgb(12, 8, 48);
+                border-radius: 5px;
+                padding-top: 2px;
+            }
+            img {
+                align-self: flex-start;
+            }
+            img:hover{
+                opacity: 0.8;
+            }
+            img:active{
+                opacity: 0.3;
+            }
+            .change{
+                min-height: 200px;
+                display:flex;
+                flex-wrap: wrap;
+            }
+            .vend {
+                background-color: rgb(0, 168, 84);
+                color: white;
+                border-radius: 5px;
+                width: 375px;
+                text-align: center;
+                
+            }
+            .vend *{
+                font-size: 25px;
+            }
+            .result, .show {
+                display: none;
+            }
+            .chkdv > *{
+                display:inline;
+            }
+            .c200{
+                width: 49px;
+            }
+            .c100 {
+                width: 59px;
+            }
+            .c50{
+                width: 75px;
+            }
+            .c20{
+                width: 68px;
+            }
+            .c10{
+                width: 56px;
+            }
+            .c5{
+                width: 46px;
+            }
+            .n50{
+                /* transform: rotate(90deg); */
+            }
+            .tendered{
+                display: none; /*hard mode*/
+            }
+        </style>
+    </head>
+    <body>
+        <div class="custcash">
+
+        </div>
+        <button class="new">Next Transaction</button>
+        <div class="tendered">$-</div>
+        
+        <div class="change">
+
+        </div>
+        <button class='show'>
+            Show result
+        </button>
+        <p class="result">result</p>   
+        <div class="chkdv">
+            <button class="check">check</button> 
+            <p class="chkans">gggg</p>   
+        </div> 
+        <div class="vend">
+            <p>Total: <b class="total">$-</b></p>
+        </div>
+        <div class="register"> 
+            <div class='notes'>
+                <!-- <img src="fifty-banknote-thumb.png" class="n50"/> -->
+                <img src="five.png" class="n5"/>
+                <img src="ten-banknote-thumb.png" class="n10"/>
+                <img src="twenty-banknote-thumb.png" class="n20"/>
+                
+            </div>
+            <div class='gcoins'>
+                <img src="2.png" class="c200"/>
+                <img src="1.png" class="c100"/>
+                <img src="50.png" class="c50"/>
+                <img src="20.png" class="c20"/>
+                <img src="10.png" class="c10"/>
+                <img src="5.png" class="c5"/>
+            </div>
+            <div class="scoins">
+                
+            </div>
+            
+        </div>
+        
+        <script>
+            
+
+            function getCoinValue(clname){
+                // returns number of cents
+                //console.log(clname);
+                if (clname[0] == 'n'){
+                    return Number(clname.substring(1)) * 100 ;
+                }
+                else {
+                    return Number(clname.substring(1));
+                }
+            }
+            function getRandomInt(min, max) {
+                //credit goes to someone on stackoverflow iirc
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min)) + min; 
+                //The maximum is exclusive and the minimum is inclusive
+            }
+            function chsrandom(list){
+                return list[getRandomInt(0, list.length)]
+            }
+            var change = []; //ints in cents
+            var changeobjs = [];
+            var changearea = document.querySelector(".change");
+            // var tendered = [];
+            var register = document.querySelector(".register");
+            function registerclick(e){
+                // console.log('clikt');
+                // console.log(e.target);
+                if (e.target.nodeName === "IMG" ){
+                    change.push(getCoinValue(e.target.className));
+                    newimg = document.createElement('img');
+                    newimg.src = e.target.src;
+                    newimg.className = e.target.className;
+                    changearea.appendChild(newimg);
+                    changeobjs.push(newimg);
+                    total();
+                    
+                }
+            }
+            var result = document.querySelector('.result');
+            function total (){
+                var sum = 0;
+                for (var i = 0; i < change.length; i++){
+                    sum += change[i];
+                }
+                result.textContent = '$' + String(sum/100);
+                return sum;
+            }
+            function removemoney (e) {
+                if (e.target.nodeName === "IMG" ){
+                    var targetindex = changeobjs.indexOf(e.target);
+                    change.splice(targetindex, 1);
+                    changeobjs.splice(targetindex, 1);
+                    e.target.parentNode.removeChild(e.target);
+                    // newimg = document.createElement('img');
+                    // newimg.src = e.target.src;
+                    // newimg.className = e.target.className;
+                    // changearea.appendChild(newimg);
+                    // changeobjs.push(newimg);
+                    total();
+                }
+            }
+            function newScen (){
+                price = getRandomInt(1, 1000) * 5;
+                // tendered = getRandomInt(price/500, 10) * 500;
+                var custCashArr = customerCash(price);
+                tendered = 0
+                for (var i = 0; i < custCashArr.length; i++){
+                    tendered += custCashArr[i];
+                }
+                for (var i = 0; i < change.length ;i++){
+                    changeobjs[i].parentNode.removeChild(changeobjs[i]);
+                }
+                change = [];
+                changeobjs = [];
+                total();
+                elTotal.textContent = '$' + String(price/100);
+                elTendered.textContent = '$' + String(tendered/100) + ' ' + custCashArr;
+                chkans.textContent = ' ';
+                while (custcasharea.firstChild){
+                    custcasharea.removeChild(custcasharea.firstChild);
+                }
+                for (var i = 0; i < custCashArr.length; i++){
+                    var imgsrc
+                    switch (custCashArr[i]){
+                        case 5000:
+                            imgsrc = 'fifty-banknote-thumb.png';
+                            break;
+                        case 2000:
+                            imgsrc = 'twenty-banknote-thumb.png';
+                            break;
+                        case 1000:
+                            imgsrc = 'ten-banknote-thumb.png';
+                            break;
+                        case 500:
+                            imgsrc = 'five.png';
+                            break;
+                        case 200:
+                            imgsrc = '2.png';
+                            break;
+                        case 100:
+                            imgsrc = '1.png';
+                            break;
+                        case 50:
+                            imgsrc = '50.png';
+                            break;
+                        case 20:
+                            imgsrc = '20.png';
+                            break;
+                        case 10:
+                            imgsrc = '10.png';
+                            break;
+                        case 5:
+                            imgsrc = '5.png';
+                            break;
+                    }
+                    newimg = document.createElement('img');
+                    newimg.src = imgsrc
+                    // do newimg.className later
+                    custcasharea.appendChild(newimg);
+                }
+                
+            }
+            function checkit (){
+                if (price + total() === tendered){
+                    chkans.textContent = 'Correct!';
+                }
+                else{
+                    chkans.textContent = '$' + String((price + total()) / 100);
+                }
+            }
+
+            function customerCash(remaining2pay){
+                var denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
+                var donthave = [];
+                var tendenoms = [];
+                while (remaining2pay > 0){
+                    var availdenoms = [];
+                    console.log('must pay' + remaining2pay);
+                    
+                    for (var i = 0; i < 10  ;i++){ //add all available denominations
+                        console.log('can i use a ' + denoms[i]);
+                        if ((denoms[i] * 3) >= remaining2pay && donthave.includes(denoms[i]) == false){
+                            availdenoms.push(denoms[i]);
+                            console.log('yes');
+                        }/*else{
+                            i = 11; //end for loop
+                        }*/ //did i do this for efficiency?
+                    }
+                    console.log('availdoms: ' + availdenoms);
+
+                    var chosenindex = getRandomInt(0, availdenoms.length);
+                    var currdenom = availdenoms[chosenindex];
+                    // console.log('paid with a ' + currdenom);
+                    tendenoms.push(currdenom);
+                    remaining2pay -= currdenom;
+                    for (var i = 0; i < chosenindex; i++){//will not execute if 50 was chosen
+                        donthave.push(availdenoms[i]);
+                        // console.log(donthave);
+                    }
+                    // console.log('unavailable: ' + donthave);
+
+                }
+                return tendenoms;
+            }
+            register.addEventListener('click',registerclick,false);
+            changearea.addEventListener('click',removemoney,false);
+            var newbtn = document.querySelector('.new');
+            newbtn.addEventListener('click', newScen, false);
+            var elTendered = document.querySelector('.tendered')
+            var elTotal = document.querySelector('.total')
+            var chkans = document.querySelector('.chkans');
+            var tendered;
+            var price;
+            var chkbtn = document.querySelector('.check');
+            chkbtn.addEventListener('click',checkit,false);
+            var custcasharea = document.querySelector('.custcash')
+
+
+            /*any whole note number above price, or minimum multiple below
+            nobody would pay 50 dollars in 5 cent piceses
+            maximum note shuld be at least a third of the price (maybe at least half)
+            ie. they won't pay 40 dollars with 4 10 dollar notes
+            problem: they might pay 50 with 3 20s, but...
+            ...i don't wwant them to pay 30 dollars with a 20 and a bunch of 5c pieces
+            new idea: tiers containing combinations of notes adding up to most of the price
+            new idea: denominations smaller than 1/3 of the price may only be used for getting closer to the price
+            usually only one note and higher than the price
+            5s should be when you're within 15 dollars of the price (not 3)
+            10s within 
+            to pay 38.45
+            choose between 20 and 50, now 18.45, choose between 20 and 10, 8.45
+            if chose 20 in first one, can't choose 50 later because if they had one they
+            would've used it
+            50s usable for anything
+            20s for anything
+            10s usable under 40
+            (so fi there's 39 left to pay they can go 10, 10, 10 and teh 9 in smaller change)
+            5s usable for anything under 15
+            2s usable for anything under 6
+            actually, the 3 rule is good
+            3 of something is okay
+
+            flaw: you can't pay 32 dollars with 3 10s
+
+
+            Static = class-level variables and methods, in UML underlined
+
+
+            */
+        </script>
+    </body>
+</html>
