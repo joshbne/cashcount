@@ -113,11 +113,9 @@
                 <img src="10.png" class="c10"/>
                 <img src="5.png" class="c5"/>
             </div>
-            <div class="scoins">
-                
-            </div>
             
         </div>
+        <a href="https://github.com/joshbne/cashcount">GitHub repo</a>
         
         <script>
             
@@ -241,6 +239,12 @@
                     newimg = document.createElement('img');
                     newimg.src = imgsrc
                     // do newimg.className later
+                    if (custCashArr[i] >= 500){
+                        newimg.className = 'n' + String(custCashArr[i] / 100);
+                    }
+                    else{
+                        newimg.className = 'c' + String(custCashArr[i])
+                    }
                     custcasharea.appendChild(newimg);
                 }
                 
